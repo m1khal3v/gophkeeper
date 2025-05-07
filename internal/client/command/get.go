@@ -23,7 +23,7 @@ func NewGetCommand(dataManager *manager.UserDataManager, masterPassword []byte) 
 
 func (c *GetCommand) Execute(ctx context.Context, args []string) (string, error) {
 	if len(args) < 1 {
-		return "", errors.New("args: <masterPassword>")
+		return "", errors.New("args: <key>")
 	}
 
 	data, err := c.dataManager.Get(ctx, args[0])
