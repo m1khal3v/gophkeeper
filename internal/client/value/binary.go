@@ -24,7 +24,3 @@ func (v *BinaryValue) Validate() error {
 func (v *BinaryValue) String() string {
 	return string(v.Data)
 }
-
-func NewBinaryValue(data []byte) *BinaryValue {
-	return &BinaryValue{Data: data}
-}

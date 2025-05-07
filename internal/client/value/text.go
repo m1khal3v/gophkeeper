@@ -29,7 +29,3 @@ func (v *TextValue) Validate() error {
 func (v *TextValue) String() string {
 	return v.Text
 }
-
-func NewTextValue(text string) *TextValue {
-	return &TextValue{Text: text}
-}

@@ -36,10 +36,3 @@ func (v *LoginPassword) Validate() error {
 func (v *LoginPassword) String() string {
 	return fmt.Sprintf("Login: %s, Password: %s", v.Login, v.Password)
 }
-
-func NewLoginPassword(login, password string) *LoginPassword {
-	return &LoginPassword{
-		Login:    login,
-		Password: password,
-	}
-}

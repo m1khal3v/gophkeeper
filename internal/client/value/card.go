@@ -46,13 +46,3 @@ func (v *CardValue) Validate() error {
 func (v *CardValue) String() string {
 	return fmt.Sprintf("Card: %s, %s, %d/%d, %s", v.Number, v.Holder, v.ExpireMonth, v.ExpireYear, v.CVC)
 }
-
-func NewCardValue(number, holder string, month, year int, cvc string) *CardValue {
-	return &CardValue{
-		Number:      number,
-		Holder:      holder,
-		ExpireMonth: month,
-		ExpireYear:  year,
-		CVC:         cvc,
-	}
-}
