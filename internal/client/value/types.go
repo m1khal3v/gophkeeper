@@ -5,7 +5,7 @@ import "fmt"
 type vType byte
 
 const (
-	typeLoginPassword vType = iota + 1 // начинаем с 1 для избежания нуля как валидного типа
+	typeLoginPassword vType = iota + 1
 	typeText
 	typeBinary
 	typeCard

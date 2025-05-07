@@ -46,7 +46,6 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			return nil, status.Error(codes.Unauthenticated, "invalid token")
 		}
 
-		// Добавляем claims в контекст
 		ctx = context.WithValue(ctx, userClaimsKey{}, claims)
 		return handler(ctx, req)
 	}

@@ -12,15 +12,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// Client инкапсулирует gRPC-клиентов обоих сервисов и токен авторизации.
 type Client struct {
 	conn       *grpc.ClientConn
 	AuthClient proto.AuthServiceClient
 	DataClient proto.DataServiceClient
-	authToken  string // Bearer-токен пользователя
+	authToken  string
 }
 
-// NewClient устанавливает соединение с gRPC сервером.
 func NewClient(serverAddr string) (*Client, error) {
 	conn, err := grpc.NewClient(
 		serverAddr,
@@ -37,12 +35,10 @@ func NewClient(serverAddr string) (*Client, error) {
 	}, nil
 }
 
-// Close закрывает соединение.
 func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
-// Login выполняет логин и сохраняет токен.
 func (c *Client) Login(ctx context.Context, login, password string, masterPassword []byte) (string, error) {
 	resp, err := c.AuthClient.Login(ctx, &proto.LoginRequest{
 		Login:          login,
@@ -56,7 +52,6 @@ func (c *Client) Login(ctx context.Context, login, password string, masterPasswo
 	return resp.Token, nil
 }
 
-// Register выполняет регистрацию и возвращает токен.
 func (c *Client) Register(ctx context.Context, login, password string, masterPassword []byte) (string, error) {
 	resp, err := c.AuthClient.Register(ctx, &proto.RegisterRequest{
 		Login:          login,
@@ -70,7 +65,6 @@ func (c *Client) Register(ctx context.Context, login, password string, masterPas
 	return resp.Token, nil
 }
 
-// Upsert отправляет данные пользователя с авторизацией по токену.
 func (c *Client) Upsert(ctx context.Context, data *model.UserData) (*proto.DataResponse, error) {
 	ctx = c.withAuth(ctx)
 	return c.DataClient.Upsert(ctx, &proto.UpsertRequest{
@@ -81,7 +75,6 @@ func (c *Client) Upsert(ctx context.Context, data *model.UserData) (*proto.DataR
 	})
 }
 
-// GetUpdates запрашивает обновления данных пользователя с авторизацией по токену.
 func (c *Client) GetUpdates(ctx context.Context, updatedAfter time.Time) (*proto.DataListResponse, error) {
 	ctx = c.withAuth(ctx)
 	return c.DataClient.GetUpdates(ctx, &proto.GetUpdatesRequest{
@@ -89,7 +82,6 @@ func (c *Client) GetUpdates(ctx context.Context, updatedAfter time.Time) (*proto
 	})
 }
 
-// withAuth добавляет токен авторизации к контексту, если он есть.
 func (c *Client) withAuth(ctx context.Context) context.Context {
 	if c.authToken != "" {
 		return metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+c.authToken)

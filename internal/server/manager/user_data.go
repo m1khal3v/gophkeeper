@@ -22,7 +22,6 @@ func (m *UserDataManager) Upsert(ctx context.Context, data *model.UserData) erro
 	return m.dataRepo.Upsert(ctx, data)
 }
 
-// GetUpdates возвращает все обновленные или удаленные данные после указанного времени
 func (m *UserDataManager) GetUpdates(ctx context.Context, userID uint32, since time.Time) ([]*model.UserData, error) {
 	return m.dataRepo.GetUpdates(ctx, userID, since)
 }

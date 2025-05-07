@@ -22,7 +22,6 @@ const (
 	defaultWriteTimeout = 10 * time.Second
 )
 
-// Load загружает конфигурацию из переменных окружения
 func Load() (*Config, error) {
 	cfg := &Config{
 		Env:          getEnv("APP_ENV", "dev"),
@@ -45,7 +44,6 @@ func Load() (*Config, error) {
 	return cfg, nil
 }
 
-// Вспомогательные функции для работы с переменными окружения
 func getEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {

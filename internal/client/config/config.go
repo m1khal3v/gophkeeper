@@ -16,7 +16,6 @@ type Config struct {
 func ParseArgs() (*Config, error) {
 	var cfg Config
 
-	// Определяем флаги
 	flag.StringVar(&cfg.ServerAddr, "addr", "localhost:50501", "server address (host:port)")
 	flag.IntVar(&cfg.SyncIntervalSec, "interval", 60, "synchronization interval in seconds")
 

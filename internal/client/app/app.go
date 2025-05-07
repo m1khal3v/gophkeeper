@@ -23,14 +23,12 @@ import (
 	"github.com/m1khal3v/gophkeeper/internal/client/synchronizer"
 )
 
-// App содержит зависимости и жизненный цикл приложения
 type App struct {
 	syncer   *synchronizer.Synchronizer
 	registry cli.CommandRegistry
 	db       *sql.DB
 }
 
-// New инициализирует приложение и зависимости, возвращает полностью подготовленный экземпляр App
 func New() (*App, error) {
 	conf, err := config.ParseArgs()
 	if err != nil {

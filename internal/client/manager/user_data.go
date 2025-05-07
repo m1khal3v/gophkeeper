@@ -23,12 +23,10 @@ func NewUserDataManager(repo *repository.UserDataRepository) *UserDataManager {
 	}
 }
 
-// Upsert сохраняет или обновляет данные по ключу
 func (m *UserDataManager) Upsert(ctx context.Context, data *model.UserData) error {
 	return m.dataRepo.Upsert(ctx, data)
 }
 
-// Get получает данные по ключу. Возвращает ErrNotFound, если данных нет.
 func (m *UserDataManager) Get(ctx context.Context, key string) (*model.UserData, error) {
 	data, err := m.dataRepo.Get(ctx, key)
 	if err != nil {
