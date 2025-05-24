@@ -37,7 +37,7 @@ func TestUserDataRepository_Upsert_Insert(t *testing.T) {
 		WillReturnError(sql.ErrNoRows)
 
 	mock.ExpectExec("INSERT INTO user_data").
-		WithArgs(data.UserID, data.DataKey, data.DataValue, data.UpdatedAt, data.DeletedAt).
+		WithArgs(data.UserID, data.DataKey, data.DataValue, data.UpdatedAt.Format(time.DateTime), data.DeletedAt.Format(time.DateTime)).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	mock.ExpectCommit()
@@ -78,7 +78,7 @@ func TestUserDataRepository_Upsert_Update(t *testing.T) {
 		WillReturnRows(rows)
 
 	mock.ExpectExec("UPDATE user_data").
-		WithArgs(data.DataValue, data.UpdatedAt, data.DeletedAt, data.UserID, data.DataKey).
+		WithArgs(data.DataValue, data.UpdatedAt.Format(time.DateTime), data.DeletedAt.Format(time.DateTime), data.UserID, data.DataKey).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	mock.ExpectCommit()
@@ -178,7 +178,7 @@ func TestUserDataRepository_GetUpdates(t *testing.T) {
 		AddRow(2, userID, "key2", []byte("value2"), now, deletedAt)
 
 	mock.ExpectQuery("SELECT id, user_id, data_key, data_value, updated_at, deleted_at FROM user_data WHERE").
-		WithArgs(userID, since).
+		WithArgs(userID, since.Format(time.DateTime)).
 		WillReturnRows(rows)
 
 	results, err := repo.GetUpdates(ctx, userID, since)
@@ -207,7 +207,7 @@ func TestUserDataRepository_GetUpdates_Error(t *testing.T) {
 
 	expectedError := errors.New("db error")
 	mock.ExpectQuery("SELECT id, user_id, data_key, data_value, updated_at, deleted_at FROM user_data WHERE").
-		WithArgs(userID, since).
+		WithArgs(userID, since.Format(time.DateTime)).
 		WillReturnError(expectedError)
 
 	results, err := repo.GetUpdates(ctx, userID, since)
@@ -235,7 +235,7 @@ func TestUserDataRepository_GetUpdates_ScanError(t *testing.T) {
 		AddRow("not-a-number", userID, "key1", []byte("value1"), time.Now(), time.Now())
 
 	mock.ExpectQuery("SELECT id, user_id, data_key, data_value, updated_at, deleted_at FROM user_data WHERE").
-		WithArgs(userID, since).
+		WithArgs(userID, since.Format(time.DateTime)).
 		WillReturnRows(rows)
 
 	results, err := repo.GetUpdates(ctx, userID, since)
