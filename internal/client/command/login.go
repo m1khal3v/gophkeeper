@@ -3,16 +3,18 @@ package command
 import (
 	"context"
 	"errors"
-
-	"github.com/m1khal3v/gophkeeper/internal/client/grpc"
 )
 
+type UserAuthenticator interface {
+	Login(ctx context.Context, login, password string, masterPassword []byte) (string, error)
+}
+
 type LoginCommand struct {
-	client         *grpc.Client
+	client         UserAuthenticator
 	masterPassword []byte
 }
 
-func NewLoginCommand(client *grpc.Client, masterPassword []byte) *LoginCommand {
+func NewLoginCommand(client UserAuthenticator, masterPassword []byte) *LoginCommand {
 	return &LoginCommand{
 		client:         client,
 		masterPassword: masterPassword,

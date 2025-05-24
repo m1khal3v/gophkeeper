@@ -13,8 +13,14 @@ var (
 	ErrNotFound = errors.New("data not found")
 )
 
+type UserDataRepository interface {
+	Upsert(ctx context.Context, data *model.UserData) error
+	Get(ctx context.Context, key string) (*model.UserData, error)
+	GetUpdates(ctx context.Context, lastSync time.Time) ([]*model.UserData, error)
+}
+
 type UserDataManager struct {
-	dataRepo *repository.UserDataRepository
+	dataRepo UserDataRepository
 }
 
 func NewUserDataManager(repo *repository.UserDataRepository) *UserDataManager {

@@ -16,8 +16,8 @@ type Server struct {
 	proto.UnimplementedAuthServiceServer
 	proto.UnimplementedDataServiceServer
 
-	userManager *manager.UserManager
-	dataManager *manager.UserDataManager
+	userManager UserManagerInterface
+	dataManager UserDataManagerInterface
 }
 
 func NewServer(

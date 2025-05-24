@@ -13,8 +13,7 @@ import (
 )
 
 type AuthInterceptor struct {
-	userManager *manager.UserManager
-	skipMethods map[string]bool
+	userManager UserManagerInterface
 }
 
 func NewAuthInterceptor(um *manager.UserManager) *AuthInterceptor {

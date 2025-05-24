@@ -8,8 +8,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type MetaRepository interface {
+	GetLastSync(ctx context.Context) (time.Time, error)
+	SetLastSync(ctx context.Context, t time.Time) error
+	GetMasterPasswordHash(ctx context.Context) (string, error)
+	SetMasterPasswordHash(ctx context.Context, h string) error
+}
+
 type MetaManager struct {
-	repo *repository.MetaRepository
+	repo MetaRepository
 }
 
 func NewMetaManager(repo *repository.MetaRepository) *MetaManager {

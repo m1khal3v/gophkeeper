@@ -25,6 +25,8 @@ func (r *UserDataRepository) Upsert(ctx context.Context, data *model.UserData) e
 	defer func() {
 		if err != nil {
 			tx.Rollback()
+		} else {
+			tx.Commit()
 		}
 	}()
 
@@ -46,14 +48,15 @@ func (r *UserDataRepository) Upsert(ctx context.Context, data *model.UserData) e
 				(?, ?, ?, ?, ?)
 		`, data.UserID, data.DataKey, data.DataValue, data.UpdatedAt, data.DeletedAt)
 
-		return err
-	}
+		if err != nil {
+			return err
+		}
+	} else {
+		if data.UpdatedAt.Before(currentVersion) {
+			return nil
+		}
 
-	if data.UpdatedAt.Before(currentVersion) {
-		return nil
-	}
-
-	_, err = tx.ExecContext(ctx, `
+		_, err = tx.ExecContext(ctx, `
 		UPDATE user_data 
 		SET 
 			data_value = ?,
@@ -61,11 +64,12 @@ func (r *UserDataRepository) Upsert(ctx context.Context, data *model.UserData) e
 			deleted_at = ?
 		WHERE user_id = ? AND data_key = ?
 	`, data.DataValue, data.UpdatedAt, data.DeletedAt, data.UserID, data.DataKey)
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
 	}
 
-	return tx.Commit()
+	return nil
 }
 
 func (r *UserDataRepository) GetUpdates(ctx context.Context, userID uint32, since time.Time) ([]*model.UserData, error) {

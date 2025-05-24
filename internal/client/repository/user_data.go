@@ -64,7 +64,7 @@ func (r *UserDataRepository) Get(ctx context.Context, key string) (*model.UserDa
 }
 
 func (r *UserDataRepository) GetUpdates(ctx context.Context, after time.Time) ([]*model.UserData, error) {
-	rows, err := r.db.QueryContext(ctx, "SELECT id, user_id, data_key, data_value, updated_at, deleted_at FROM user_data WHERE updated_at > ?", after.Unix())
+	rows, err := r.db.QueryContext(ctx, "SELECT id, data_key, data_value, updated_at, deleted_at FROM user_data WHERE updated_at > ?", after.Unix())
 	if err != nil {
 		return nil, err
 	}

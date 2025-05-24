@@ -21,6 +21,8 @@ func Run(ctx context.Context, registry CommandRegistry) {
 	fmt.Print("> ")
 
 	for reader.Scan() {
+		defer fmt.Print("> ")
+
 		line := strings.TrimSpace(reader.Text())
 		if len(line) == 0 {
 			continue
@@ -43,6 +45,5 @@ func Run(ctx context.Context, registry CommandRegistry) {
 		}
 
 		fmt.Println(result)
-		fmt.Print("> ")
 	}
 }

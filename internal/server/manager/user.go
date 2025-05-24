@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/m1khal3v/gophkeeper/internal/server/jwt"
+	"github.com/m1khal3v/gophkeeper/internal/server/model"
 	"github.com/m1khal3v/gophkeeper/internal/server/repository"
 
 	"golang.org/x/crypto/bcrypt"
@@ -14,8 +15,13 @@ var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
+type UserRepository interface {
+	GetUserByLogin(login string) (*model.User, error)
+	CreateUser(login, passwordHash, masterPasswordHash string) error
+}
+
 type UserManager struct {
-	userRepo *repository.UserRepository
+	userRepo UserRepository
 	jwt      *jwt.Container
 }
 

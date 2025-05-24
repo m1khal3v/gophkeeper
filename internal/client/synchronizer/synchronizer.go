@@ -5,26 +5,40 @@ import (
 	"sync"
 	"time"
 
-	"github.com/m1khal3v/gophkeeper/internal/client/grpc"
-	"github.com/m1khal3v/gophkeeper/internal/client/manager"
 	"github.com/m1khal3v/gophkeeper/internal/client/model"
 	"github.com/m1khal3v/gophkeeper/internal/common/logger"
+	"github.com/m1khal3v/gophkeeper/internal/common/proto"
 	"go.uber.org/zap"
 )
 
+type GRPCClient interface {
+	Upsert(ctx context.Context, data *model.UserData) (*proto.DataResponse, error)
+	GetUpdates(ctx context.Context, lastSync time.Time) (*proto.DataListResponse, error)
+}
+
+type UserDataManager interface {
+	GetUpdates(ctx context.Context, lastSync time.Time) ([]*model.UserData, error)
+	Upsert(ctx context.Context, data *model.UserData) error
+}
+
+type MetaManager interface {
+	GetLastSync(ctx context.Context) (time.Time, error)
+	SetLastSync(ctx context.Context, lastSync time.Time) error
+}
+
 type Synchronizer struct {
-	client      *grpc.Client
-	userDataMgr *manager.UserDataManager
-	metaManager *manager.MetaManager
+	client      GRPCClient
+	userDataMgr UserDataManager
+	metaManager MetaManager
 	interval    time.Duration
 	stopCh      chan struct{}
 	wg          sync.WaitGroup
 }
 
 func New(
-	client *grpc.Client,
-	userDataMgr *manager.UserDataManager,
-	metaManager *manager.MetaManager,
+	client GRPCClient,
+	userDataMgr UserDataManager,
+	metaManager MetaManager,
 	interval time.Duration,
 ) *Synchronizer {
 	return &Synchronizer{
@@ -40,9 +54,12 @@ func (s *Synchronizer) Start(ctx context.Context) {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
-		s.syncOnce(ctx)
+
 		ticker := time.NewTicker(s.interval)
 		defer ticker.Stop()
+
+		s.syncOnce(ctx)
+
 		for {
 			select {
 			case <-ticker.C:

@@ -8,8 +8,13 @@ import (
 	"github.com/m1khal3v/gophkeeper/internal/server/repository"
 )
 
+type UserDataRepository interface {
+	Upsert(ctx context.Context, data *model.UserData) error
+	GetUpdates(ctx context.Context, userID uint32, since time.Time) ([]*model.UserData, error)
+}
+
 type UserDataManager struct {
-	dataRepo *repository.UserDataRepository
+	dataRepo UserDataRepository
 }
 
 func NewUserDataManager(dataRepo *repository.UserDataRepository) *UserDataManager {

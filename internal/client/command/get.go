@@ -5,16 +5,20 @@ import (
 	"errors"
 
 	"github.com/m1khal3v/gophkeeper/internal/client/aes"
-	"github.com/m1khal3v/gophkeeper/internal/client/manager"
+	"github.com/m1khal3v/gophkeeper/internal/client/model"
 	"github.com/m1khal3v/gophkeeper/internal/client/value"
 )
 
+type UserDataGetter interface {
+	Get(ctx context.Context, key string) (*model.UserData, error)
+}
+
 type GetCommand struct {
-	dataManager    *manager.UserDataManager
+	dataManager    UserDataGetter
 	masterPassword []byte
 }
 
-func NewGetCommand(dataManager *manager.UserDataManager, masterPassword []byte) *GetCommand {
+func NewGetCommand(dataManager UserDataGetter, masterPassword []byte) *GetCommand {
 	return &GetCommand{
 		dataManager:    dataManager,
 		masterPassword: masterPassword,

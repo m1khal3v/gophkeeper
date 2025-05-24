@@ -47,12 +47,12 @@ func (r *MetaRepository) SetMasterPasswordHash(ctx context.Context, h string) er
 
 func (r *MetaRepository) init() error {
 	queries := []string{
-		`CREATE TABLE IF NOT EXISTS sync_meta (
+		`CREATE TABLE IF NOT EXISTS meta (
 		  id INTEGER PRIMARY KEY CHECK (id = 0),
 		  last_sync INTEGER NOT NULL,
-          master_password_hash TEXT NOT NULL,
+          master_password_hash TEXT NOT NULL
 		)`,
-		`INSERT OR IGNORE INTO sync_meta (id, last_sync) VALUES (0, 0, "")`,
+		`INSERT OR IGNORE INTO meta (id, last_sync, master_password_hash) VALUES (0, 0, "")`,
 	}
 
 	for _, query := range queries {

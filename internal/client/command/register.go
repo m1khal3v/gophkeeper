@@ -3,16 +3,18 @@ package command
 import (
 	"context"
 	"errors"
-
-	"github.com/m1khal3v/gophkeeper/internal/client/grpc"
 )
 
+type UserRegistrar interface {
+	Register(ctx context.Context, login, password string, masterPassword []byte) (string, error)
+}
+
 type RegisterCommand struct {
-	client         *grpc.Client
+	client         UserRegistrar
 	masterPassword []byte
 }
 
-func NewRegisterCommand(client *grpc.Client, masterPassword []byte) *RegisterCommand {
+func NewRegisterCommand(client UserRegistrar, masterPassword []byte) *RegisterCommand {
 	return &RegisterCommand{
 		client:         client,
 		masterPassword: masterPassword,

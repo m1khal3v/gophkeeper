@@ -6,17 +6,20 @@ import (
 	"time"
 
 	"github.com/m1khal3v/gophkeeper/internal/client/aes"
-	"github.com/m1khal3v/gophkeeper/internal/client/manager"
 	"github.com/m1khal3v/gophkeeper/internal/client/model"
 	"github.com/m1khal3v/gophkeeper/internal/client/value"
 )
 
+type DataUpserter interface {
+	Upsert(ctx context.Context, data *model.UserData) error
+}
+
 type SetCommand struct {
-	dataManager    *manager.UserDataManager
+	dataManager    DataUpserter
 	masterPassword []byte
 }
 
-func NewSetCommand(dataManager *manager.UserDataManager, masterPassword []byte) *SetCommand {
+func NewSetCommand(dataManager DataUpserter, masterPassword []byte) *SetCommand {
 	return &SetCommand{
 		dataManager:    dataManager,
 		masterPassword: masterPassword,
