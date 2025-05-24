@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 
+	"github.com/m1khal3v/gophkeeper/internal/common/logger"
 	"github.com/m1khal3v/gophkeeper/internal/common/proto"
 	"github.com/m1khal3v/gophkeeper/internal/server/manager"
 	"github.com/m1khal3v/gophkeeper/internal/server/model"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -106,6 +108,8 @@ func convertError(err error) error {
 	case errors.Is(err, manager.ErrInvalidCredentials):
 		return status.Error(codes.Unauthenticated, err.Error())
 	default:
+		logger.Logger.Error("error occurred", zap.Error(err))
+
 		return status.Error(codes.Internal, "internal server error")
 	}
 }

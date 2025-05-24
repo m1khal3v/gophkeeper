@@ -71,6 +71,7 @@ func (s *Synchronizer) Start(ctx context.Context) {
 			}
 		}
 	}()
+	s.wg.Wait()
 }
 
 func (s *Synchronizer) Stop() {

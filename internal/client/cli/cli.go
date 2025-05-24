@@ -46,4 +46,9 @@ func Run(ctx context.Context, registry CommandRegistry) {
 
 		fmt.Println(result)
 	}
+
+	err := reader.Err()
+	if err != nil {
+		logger.Logger.Fatal("STDIN read error", zap.Error(err))
+	}
 }

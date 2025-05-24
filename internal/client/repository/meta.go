@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type MetaRepository struct {

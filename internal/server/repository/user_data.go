@@ -46,7 +46,7 @@ func (r *UserDataRepository) Upsert(ctx context.Context, data *model.UserData) e
 				(user_id, data_key, data_value, updated_at, deleted_at) 
 			VALUES 
 				(?, ?, ?, ?, ?)
-		`, data.UserID, data.DataKey, data.DataValue, data.UpdatedAt, data.DeletedAt)
+		`, data.UserID, data.DataKey, data.DataValue, data.UpdatedAt.Format(time.DateTime), data.DeletedAt.Format(time.DateTime))
 
 		if err != nil {
 			return err
@@ -63,7 +63,7 @@ func (r *UserDataRepository) Upsert(ctx context.Context, data *model.UserData) e
 			updated_at = ?,
 			deleted_at = ?
 		WHERE user_id = ? AND data_key = ?
-	`, data.DataValue, data.UpdatedAt, data.DeletedAt, data.UserID, data.DataKey)
+	`, data.DataValue, data.UpdatedAt.Format(time.DateTime), data.DeletedAt.Format(time.DateTime), data.UserID, data.DataKey)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ func (r *UserDataRepository) GetUpdates(ctx context.Context, userID uint32, sinc
 		`SELECT id, user_id, data_key, data_value, updated_at, deleted_at
 		 FROM user_data
 		 WHERE user_id = ? AND srv_updated_at > ?`,
-		userID, since,
+		userID, since.Format(time.DateTime),
 	)
 	if err != nil {
 		return nil, err

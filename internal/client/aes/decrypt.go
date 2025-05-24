@@ -3,10 +3,13 @@ package aes
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/sha256"
 	"errors"
 )
 
 func Decrypt(key, data []byte) ([]byte, error) {
+	shaKey := sha256.Sum256(key)
+	key = shaKey[:]
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err

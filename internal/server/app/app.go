@@ -19,6 +19,8 @@ import (
 	"github.com/m1khal3v/gophkeeper/internal/server/repository"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type App struct {
@@ -96,7 +98,7 @@ func (a *App) Run() error {
 }
 
 func initDB(cfg *config.Config) (*sql.DB, error) {
-	db, err := sql.Open("mysql", cfg.DatabaseDSN)
+	db, err := sql.Open("mysql", cfg.DatabaseDSN+"?parseTime=true")
 	if err != nil {
 		return nil, fmt.Errorf("failed to open db: %w", err)
 	}

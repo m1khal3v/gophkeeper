@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/m1khal3v/gophkeeper/internal/client/model"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type UserDataRepository struct {

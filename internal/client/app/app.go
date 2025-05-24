@@ -15,7 +15,9 @@ import (
 	"github.com/m1khal3v/gophkeeper/internal/client/cli"
 	"github.com/m1khal3v/gophkeeper/internal/client/command"
 	"github.com/m1khal3v/gophkeeper/internal/client/grpc"
+	"github.com/m1khal3v/gophkeeper/internal/common/logger"
 	_ "github.com/mattn/go-sqlite3"
+	"go.uber.org/zap"
 
 	"github.com/m1khal3v/gophkeeper/internal/client/config"
 	"github.com/m1khal3v/gophkeeper/internal/client/manager"
@@ -34,6 +36,8 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("can`t parse arguments: %w", err)
 	}
+
+	logger.Init("client", zap.InfoLevel.String())
 
 	dbPath := conf.DBPath
 	if err := touchFilepath(dbPath); err != nil {

@@ -20,7 +20,7 @@ func (m *mockDataManager) Get(ctx context.Context, key string) (*model.UserData,
 }
 
 func TestGetCommand_Execute_Success(t *testing.T) {
-	password := []byte("1234567890abcdef") // 16 байт для AES-128
+	password := []byte("1234567890abcdef")
 	want := "some-value"
 	val, err := value.FromUserInput("text", []string{want})
 	assert.NoError(t, err)
