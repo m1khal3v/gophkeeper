@@ -4,11 +4,14 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"io"
 	"testing"
 )
 
 func encrypt(key, plaintext []byte) ([]byte, error) {
+	shaKey := sha256.Sum256(key)
+	key = shaKey[:]
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err

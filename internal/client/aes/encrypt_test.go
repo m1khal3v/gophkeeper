@@ -5,10 +5,13 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"testing"
 )
 
 func decrypt(key, ciphertext []byte) ([]byte, error) {
+	shaKey := sha256.Sum256(key)
+	key = shaKey[:]
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -49,15 +52,6 @@ func TestEncrypt_Success(t *testing.T) {
 	}
 	if !bytes.Equal(data, plaintext) {
 		t.Errorf("decrypted plaintext does not match original, got %s, want %s", plaintext, data)
-	}
-}
-
-func TestEncrypt_InvalidKey(t *testing.T) {
-	key := []byte("short")
-	data := []byte("data")
-	_, err := Encrypt(key, data)
-	if err == nil {
-		t.Errorf("expected error for invalid key, got nil")
 	}
 }
 
