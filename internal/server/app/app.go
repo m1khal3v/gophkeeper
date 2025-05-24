@@ -46,15 +46,10 @@ func New() (*App, error) {
 		return nil, fmt.Errorf("failed to init db: %w", err)
 	}
 
-	services, err := initServices(db, cfg)
-	if err != nil {
-		return nil, fmt.Errorf("failed to init services: %w", err)
-	}
-
 	return &App{
 		cfg:      cfg,
 		db:       db,
-		services: services,
+		services: initServices(db, cfg),
 	}, nil
 }
 
@@ -125,12 +120,12 @@ type services struct {
 	dataManager *manager.UserDataManager
 }
 
-func initServices(db *sql.DB, cfg *config.Config) (*services, error) {
+func initServices(db *sql.DB, cfg *config.Config) *services {
 	userRepo := repository.NewUserRepository(db)
 	dataRepo := repository.NewUserDataRepository(db)
 
 	return &services{
 		userManager: manager.NewUserManager(userRepo, jwt.New(cfg.AppSecret)),
 		dataManager: manager.NewUserDataManager(dataRepo),
-	}, nil
+	}
 }
