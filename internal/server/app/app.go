@@ -85,10 +85,8 @@ func (a *App) Run() error {
 		stop()
 	}()
 
-	select {
-	case <-ctx.Done():
-		stop()
-	}
+	<-ctx.Done()
+	stop()
 
 	logger.Logger.Info("Shutting down server...")
 

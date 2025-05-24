@@ -68,6 +68,10 @@ func (r *UserDataRepository) GetUpdates(ctx context.Context, after time.Time) ([
 	if err != nil {
 		return nil, err
 	}
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
 	defer rows.Close()
 	var result []*model.UserData
 	for rows.Next() {

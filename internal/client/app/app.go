@@ -58,8 +58,13 @@ func New() (*App, error) {
 	userDataManager := manager.NewUserDataManager(userDataRepo)
 	metaManager := manager.NewMetaManager(metaRepo)
 
-	ctx, _ := context.WithTimeout(context.Background(), time.Second*10)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
 	ok, err := metaManager.MasterPasswordHashDefined(ctx)
+	if err != nil {
+		return nil, err
+	}
 	if !ok {
 		if err := metaManager.SetMasterPassword(ctx, conf.MasterPassword); err != nil {
 			return nil, err

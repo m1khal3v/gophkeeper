@@ -56,7 +56,7 @@ func (r *UserDataRepository) Upsert(ctx context.Context, data *model.UserData) e
 			return nil
 		}
 
-		_, err = tx.ExecContext(ctx, `
+		_, err := tx.ExecContext(ctx, `
 		UPDATE user_data 
 		SET 
 			data_value = ?,
@@ -82,6 +82,10 @@ func (r *UserDataRepository) GetUpdates(ctx context.Context, userID uint32, sinc
 	if err != nil {
 		return nil, err
 	}
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
 	defer rows.Close()
 
 	var result []*model.UserData
