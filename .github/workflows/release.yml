@@ -14,13 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v2
+
       - name: Build linux-amd64
         run: |
           CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -C ./cmd/client -buildvcs=false -o client-linux-amd64
 
       - name: Build windows-amd64
         run: |
-          CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -C ./cmd/client -buildvcs=false -o client-win-amd64.exe
+          CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc -pthread" GOOS=windows GOARCH=amd64 go build -C ./cmd/client -buildvcs=false -o client-win-amd64.exe
 
       - name: Build macos-amd64
         run: |
@@ -32,7 +35,7 @@ jobs:
 
       - name: Build windows-arm64
         run: |
-          CGO_ENABLED=1 GOOS=windows GOARCH=arm64 go build -C ./cmd/client -buildvcs=false -o client-win-arm64.exe
+          CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc -pthread" GOOS=windows GOARCH=arm64 go build -C ./cmd/client -buildvcs=false -o client-win-arm64.exe
 
       - name: Build macos-arm64
         run: |
