@@ -61,5 +61,11 @@ func GetClaimsFromContext(ctx context.Context) (*jwt.Claims, error) {
 	if val == nil {
 		return nil, status.Error(codes.Unauthenticated, "no auth info in context")
 	}
-	return val.(*jwt.Claims), nil
+
+	claims, ok := val.(*jwt.Claims)
+	if !ok {
+		return nil, status.Error(codes.Internal, "invalid auth info in context")
+	}
+
+	return claims, nil
 }
