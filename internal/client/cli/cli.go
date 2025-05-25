@@ -21,10 +21,10 @@ func Run(ctx context.Context, registry CommandRegistry) {
 	fmt.Print("> ")
 
 	for reader.Scan() {
-		fmt.Print("> ")
-
 		line := strings.TrimSpace(reader.Text())
 		if len(line) == 0 {
+			fmt.Print("> ")
+
 			continue
 		}
 
@@ -35,16 +35,21 @@ func Run(ctx context.Context, registry CommandRegistry) {
 		cmd, ok := registry[cmdName]
 		if !ok {
 			logger.Logger.Error("Unknown command", zap.String("command", cmdName))
+			fmt.Print("> ")
+
 			continue
 		}
 
 		result, err := cmd.Execute(ctx, args)
 		if err != nil {
 			logger.Logger.Error("Command execution error", zap.Error(err))
+			fmt.Print("> ")
+
 			continue
 		}
 
 		fmt.Println(result)
+		fmt.Print("> ")
 	}
 
 	err := reader.Err()
